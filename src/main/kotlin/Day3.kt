@@ -1,5 +1,4 @@
 import java.io.File
-import kotlin.math.abs
 
 
 fun main() {
@@ -20,22 +19,22 @@ private fun part2(text: String): Int {
    val pattern = Regex("(do(n't)?)|mul\\((\\d+),(\\d+)\\)")
     val matches = pattern.findAll(text)
 
-    val mutableList = mutableListOf<Int>()
-    var booleanDo = true;
+    val multiplicationResults = mutableListOf<Int>()
+    var isDo = true;
     for ( match in matches) {
         if (match.value == "do" ) {
-            booleanDo = true
+            isDo = true
             continue
         }
         if (match.value == "don't") {
-            booleanDo = false
+            isDo = false
             continue
         }
-        if (booleanDo) {
-            mutableList.add(match.groups[3]?.value!!.toInt() * match.groups[4]?.value!!.toInt())
+        if (isDo) {
+            multiplicationResults.add(match.groups[3]?.value!!.toInt() * match.groups[4]?.value!!.toInt())
         }
     }
-    return mutableList.sum()
+    return multiplicationResults.sum()
 }
 
 

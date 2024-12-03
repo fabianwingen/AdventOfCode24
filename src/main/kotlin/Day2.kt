@@ -1,9 +1,9 @@
 import java.io.File
 import kotlin.math.abs
 
-val conditionDifference: (Pair<Int, Int>) -> Boolean = { abs(it.first - it.second) <= 3 }
-val conditionIncreasing: (Pair<Int, Int>) -> Boolean = { it.first < it.second }
-val conditionDecreasing: (Pair<Int, Int>) -> Boolean = { it.first > it.second }
+val isDifferenceValid: (Pair<Int, Int>) -> Boolean = { abs(it.first - it.second) <= 3 }
+val isIncreasing: (Pair<Int, Int>) -> Boolean = { it.first < it.second }
+val isDecreasing: (Pair<Int, Int>) -> Boolean = { it.first > it.second }
 
 fun main() {
     val path = "src/main/resources/input2.txt"
@@ -27,8 +27,8 @@ private fun part2(inputs: List<List<Int>>): Int {
 private fun getValidLines(inputs: List<List<Int>>): List<List<Int>> {
     val validLines = inputs.filter {
         val pairs = it.zipWithNext()
-        pairs.all { pair -> conditionDifference(pair) && conditionIncreasing(pair) } ||
-                pairs.all { pair -> conditionDifference(pair) && conditionDecreasing(pair) }
+        pairs.all { pair -> isDifferenceValid(pair) && isIncreasing(pair) } ||
+                pairs.all { pair -> isDifferenceValid(pair) && isDecreasing(pair) }
     }
     return validLines
 }
