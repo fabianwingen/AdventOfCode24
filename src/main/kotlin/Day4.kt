@@ -12,34 +12,29 @@ private fun part1(input: List<String>): Int {
     val lines = getAllLines(input)
     var counter = 0
     lines.forEach {
-        for (i in it.indices) {
-            if (it[i] == 'X' && (i+1) in it.indices) {
-                if (it[i+1] == 'M' && (i+2) in it.indices) {
-                    if (it[i+2] == 'A' && (i+3) in it.indices) {
-                        if (it[i+3] == 'S') {
-                            counter++
-                        }
-                    }
-                }
-            }
-            if (it[i] == 'S' && (i+1) in it.indices) {
-                if (it[i+1] == 'A' && (i+2) in it.indices) {
-                    if (it[i+2] == 'M' && (i+3) in it.indices) {
-                        if (it[i+3] == 'X') {
-                            counter++
-                        }
+        counter += checkNextChars(it, "XMAS")
+        counter += checkNextChars(it, "SAMX")
+    }
+    return counter
+}
+
+private fun checkNextChars(string: String, word:String): Int {
+    for (i in string.indices) {
+        if (string[i] == word[0] && (i + 1) in string.indices) {
+            if (string[i + 1] == word[1] && (i + 2) in string.indices) {
+                if (string[i + 2] == word[2] && (i + 3) in string.indices) {
+                    if (string[i + 3] == word[3]) {
+                        return 1
                     }
                 }
             }
         }
     }
-    return counter
+    return 0
 }
-
 private fun part2(inputs: List<String>): Int {
     val pattern = Regex("^(M.M.A.S.S|S.M.A.S.M|M.S.A.M.S|S.S.A.M.M)")
     return inputs.filter { pattern.containsMatchIn(it) }.size
-
 }
 
 private fun getAllLines(input: List<String>): List<String> {
@@ -59,20 +54,12 @@ private fun getAllLines(input: List<String>): List<String> {
     return allLines
 }
 
-
-
-
 fun getDiagonalLines(input: List<String>): List<String> {
     val length = input.size
     val diagonalLines = mutableListOf<String>()
 
     // Helper function to extract a diagonal
-    fun collectDiagonal(
-        startX: Int,
-        startY: Int,
-        stepX: Int,
-        stepY: Int
-    ): String {
+    fun collectDiagonal(startX: Int, startY: Int, stepX: Int, stepY: Int): String {
         val diagonalLine = mutableListOf<Char>()
         var x = startX
         var y = startY
@@ -84,23 +71,23 @@ fun getDiagonalLines(input: List<String>): List<String> {
         return diagonalLine.joinToString("")
     }
 
-    // Top-right diagonals
+
+    //top left  to right bottom \
     for (x in 0 until length) {
         diagonalLines.add(collectDiagonal(x, 0, 1, 1))
     }
-    // Bottom-left diagonals (excluding main diagonal)
-    for (y in 1 until length) {
+    // left row to right bottom \
+    for (y in 1 until length) { // exclude main diagonal as already checked
         diagonalLines.add(collectDiagonal(0, y, 1, 1))
     }
-    // Top-left diagonals
+    // right top to bottom left /
     for (x in 0 until length) {
         diagonalLines.add(collectDiagonal(length - 1 - x, 0, -1, 1))
     }
-    // Bottom-right diagonals (excluding main diagonal)
-    for (y in 1 until length) {
+    // right column to bottom left
+    for (y in 1 until length) { //exclude main diagonal as already checked
         diagonalLines.add(collectDiagonal(length - 1, y, -1, 1))
     }
-
     return diagonalLines
 }
 
