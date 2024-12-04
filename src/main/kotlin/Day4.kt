@@ -53,61 +53,57 @@ private fun getAllLines(input: List<String>): List<String> {
         }
         verticalLines.add(columnString)
     }
-    val diagonalLines = getDiagonalLines(length, input)
+    val diagonalLines = getDiagonalLines(input)
     val horizontalLines = input
     val allLines = diagonalLines + horizontalLines + verticalLines
     return allLines
 }
 
-private fun getDiagonalLines(length: Int, input: List<String>): List<String> { //TODO: reduce duplicate code
-    val diagonalLines = mutableListOf<String>()
-    for (x in 0 until length) {
-        var diagonalYCounter = 0
-        var diagonalXCounter = x;
-        val diagonalLine = mutableListOf<Char>()
-        while (diagonalXCounter < length && diagonalYCounter in input.indices) {
-            diagonalLine.add(input[diagonalYCounter][diagonalXCounter])
-            diagonalXCounter++
-            diagonalYCounter++
-        }
-        diagonalLines.add(diagonalLine.joinToString(separator = ""))
-    }
-    for (y in input.indices) {
-        var diagonalYCounter = y + 1 // duplicate main diagonal
-        var diagonalXCounter = 0
-        val diagonalLine = mutableListOf<Char>()
-        while (diagonalXCounter < length && diagonalYCounter in input.indices) {
-            diagonalLine.add(input[diagonalYCounter][diagonalXCounter])
-            diagonalXCounter++
-            diagonalYCounter++
-        }
-        diagonalLines.add(diagonalLine.joinToString(separator = ""))
-    }
-    for (x in 0 until length) {
-        var diagonalYCounter = 0
-        var diagonalXCounter = length-1-x;
-        val diagonalLine = mutableListOf<Char>()
-        while (diagonalXCounter >= 0 && diagonalYCounter in input.indices) {
-            diagonalLine.add(input[diagonalYCounter][diagonalXCounter])
-            diagonalXCounter--
-            diagonalYCounter++
-        }
 
-        diagonalLines.add(diagonalLine.joinToString(separator = ""))
-    }
-    for (y in input.indices) {
-        var diagonalYCounter = 1 + y // duplicate main diagonal
-        var diagonalXCounter = length-1
+
+
+fun getDiagonalLines(input: List<String>): List<String> {
+    val length = input.size
+    val diagonalLines = mutableListOf<String>()
+
+    // Helper function to extract a diagonal
+    fun collectDiagonal(
+        startX: Int,
+        startY: Int,
+        stepX: Int,
+        stepY: Int
+    ): String {
         val diagonalLine = mutableListOf<Char>()
-        while (diagonalXCounter >= 0 && diagonalYCounter in input.indices) {
-            diagonalLine.add(input[diagonalYCounter][diagonalXCounter])
-            diagonalXCounter--
-            diagonalYCounter++
+        var x = startX
+        var y = startY
+        while (x in 0 until length && y in input.indices) {
+            diagonalLine.add(input[y][x])
+            x += stepX
+            y += stepY
         }
-        diagonalLines.add(diagonalLine.joinToString(separator = ""))
+        return diagonalLine.joinToString("")
     }
+
+    // Top-right diagonals
+    for (x in 0 until length) {
+        diagonalLines.add(collectDiagonal(x, 0, 1, 1))
+    }
+    // Bottom-left diagonals (excluding main diagonal)
+    for (y in 1 until length) {
+        diagonalLines.add(collectDiagonal(0, y, 1, 1))
+    }
+    // Top-left diagonals
+    for (x in 0 until length) {
+        diagonalLines.add(collectDiagonal(length - 1 - x, 0, -1, 1))
+    }
+    // Bottom-right diagonals (excluding main diagonal)
+    for (y in 1 until length) {
+        diagonalLines.add(collectDiagonal(length - 1, y, -1, 1))
+    }
+
     return diagonalLines
 }
+
 
 private fun parseInputs(file: File): List<String> {
     return file.readLines()
@@ -128,3 +124,4 @@ private fun parseInputs2(file: File): List<String> {
     }
     return kasten.toList()
 }
+
