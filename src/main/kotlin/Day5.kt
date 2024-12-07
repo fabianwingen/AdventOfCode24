@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.system.measureTimeMillis
 
 fun main() {
     val path = "src/main/resources/input5.txt"
@@ -6,7 +7,10 @@ fun main() {
     val parsedRules = parseInputsOrderingRules(file)
     val parsedUpdates = parseUpdates(file)
     println(part1(parsedRules,parsedUpdates))
-    println(part2(parsedRules,parsedUpdates))
+    val time = measureTimeMillis {
+        val result = part2(parsedRules, parsedUpdates)
+    }
+    println(time)
 }
 
 private fun part1(rules: Map<Int, List<Int>>, updates: List<List<Int>>): Int {
